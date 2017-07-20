@@ -7,4 +7,5 @@ suite('HLL', () => {
     bench('add const string', () => hll.add('1'));
     bench('add const buffer', () => hll.add(buf));
     bench('add random', () => hll.add(Math.random().toString()));
+    bench('toBuffer', () => hll.toBuffer());
 });

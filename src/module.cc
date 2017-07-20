@@ -10,6 +10,7 @@ public:
     static const char * const CLASS_NAME;
 
     static void setupMember(v8::Local<v8::FunctionTemplate>& tpl) {
+        Nan::SetPrototypeMethod(tpl, "toBuffer", wrapFunction<&HLLWrap::toBuffer>);
         Nan::SetPrototypeMethod(tpl, "add", wrapFunction<&HLLWrap::add>);
         Nan::SetPrototypeMethod(tpl, "count", wrapFunction<&HLLWrap::count>);
         Nan::SetPrototypeMethod(tpl, "merge", wrapFunction<&HLLWrap::merge>);
@@ -45,6 +46,12 @@ private:
     }
 
 private:
+    NAN_METHOD(toBuffer) {
+        info.GetReturnValue().Set(
+            Nan::CopyBuffer((const char *)hll.registers, hll.size).ToLocalChecked()
+        );
+    }
+
     NAN_METHOD(add) {
         if (node::Buffer::HasInstance(info[0])) {
             const char *data = node::Buffer::Data(info[0]);

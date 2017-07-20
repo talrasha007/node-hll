@@ -22,6 +22,10 @@ module.exports = class {
         return this._bits;
     }
 
+    toBuffer() {
+        return this._hll.toBuffer();
+    }
+
     add(item) {
         if (typeof item === 'string' || Buffer.isBuffer(item)) {
             this._hll.add(item);
