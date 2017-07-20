@@ -23,10 +23,10 @@ module.exports = class {
     }
 
     add(item) {
-        if (Buffer.isBuffer(item)) {
+        if (typeof item === 'string' || Buffer.isBuffer(item)) {
             this._hll.add(item);
         } else {
-            this._hll.add(new Buffer(item));
+            throw new Error('[HLL add] Invalid args.');
         }
     }
 

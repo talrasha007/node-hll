@@ -46,10 +46,15 @@ private:
 
 private:
     NAN_METHOD(add) {
-        const char *data = node::Buffer::Data(info[0]);
-        size_t len = node::Buffer::Length(info[0]);
+        if (node::Buffer::HasInstance(info[0])) {
+            const char *data = node::Buffer::Data(info[0]);
+            size_t len = node::Buffer::Length(info[0]);
 
-        hll_add(&hll, data, len);
+            hll_add(&hll, data, len);
+        } else {
+            Nan::Utf8String str(info[0]);
+            hll_add(&hll, *str, str.length());
+        }
     }
 
     NAN_METHOD(count) {
