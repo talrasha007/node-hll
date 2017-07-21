@@ -1,5 +1,5 @@
 # node-hll
-This is a native (HyperLogLog)[http://en.wikipedia.org/wiki/HyperLogLog] lib (A wrap for (avz/hll)[https://github.com/avz/hll]).
+This is a native [HyperLogLog](http://en.wikipedia.org/wiki/HyperLogLog) lib (A wrap for [avz/hll](https://github.com/avz/hll)).
 
 ## matcha benchmark result
 ```
