@@ -32,6 +32,8 @@ module.exports = class {
         } else {
             throw new Error('[HLL add] Invalid args.');
         }
+
+        return this;
     }
 
     count() {
@@ -40,9 +42,41 @@ module.exports = class {
 
     merge(hll) {
         if (hll instanceof module.exports) {
+            if (hll.bits !== this.bits) {
+                throw new Error('[HLL merge] Hlls should have same bits.');
+            }
+
             this._hll.merge(hll._hll);
         } else {
             throw new Error('[HLL merge] Invalid args.');
         }
+
+        return this;
+    }
+
+    clone() {
+        const r = new module.exports(this.bits);
+        return r.merge(this);
+    }
+
+    /*
+     * |A n B| = |A| + |B| - |A u B|
+     * in the below, we set A = head, and B = tail.
+     * then note that A u (B0 n B1 n ...) = (B0 u A) n (B1 u A) n ...
+     * the latter we can compute with tail.map { _ + A } using the HLLInstance +
+     * since + on HLLInstance creates the instance for the union.
+    */
+    static intersectionSize(hlls) {
+        if (hlls.length === 0) throw new Error('[HLL intersectionSize] Invalid args.');
+        if (hlls.length === 1) return hlls[0].count();
+
+        const head = hlls[0];
+        const tail = hlls.slice(1);
+
+        const ret = head.count() +
+            module.exports.intersectionSize(tail) -
+            module.exports.intersectionSize(tail.map(h => h.clone().merge(head)));
+
+        return Math.max(ret, 0);
     }
 };
