@@ -40,6 +40,9 @@ module.exports = class {
         return this._hll.count();
     }
 
+    /*
+     * In place merge.
+     */
     merge(hll) {
         if (hll instanceof module.exports) {
             if (hll.bits !== this.bits) {
@@ -60,12 +63,19 @@ module.exports = class {
     }
 
     /*
+     * Returns a new hll that is h1 u h2.
+     */
+    static merge(h1, h2) {
+        return h1.clone().merge(h2);
+    }
+
+    /*
      * |A n B| = |A| + |B| - |A u B|
      * in the below, we set A = head, and B = tail.
      * then note that A u (B0 n B1 n ...) = (B0 u A) n (B1 u A) n ...
      * the latter we can compute with tail.map { _ + A } using the HLLInstance +
      * since + on HLLInstance creates the instance for the union.
-    */
+     */
     static intersectionSize(hlls) {
         if (hlls.length === 0) throw new Error('[HLL intersectionSize] Invalid args.');
         if (hlls.length === 1) return hlls[0].count();

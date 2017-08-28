@@ -15,6 +15,9 @@ console.log(new HLL(hll.toBuffer()).count());
 
 const hll2 = new HLL(5);
 hll2.add('3');
+
+console.log('HLL.merge', HLL.merge(hll2, hll).count(), hll2.count());
+
 hll2.merge(hll);
 console.log(hll2.count());
 
